@@ -1,0 +1,13 @@
+#!/bin/bash
+
+function s(){
+	dir=$1
+	name=$2
+	cd $dir
+	./start
+	cd -
+}
+
+s master1 jy-mysql-writer1
+s master2 jy-mysql-writer2
+s master3 jy-mysql-writer3

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+docker stop jy-mysql-write1
+docker stop jy-mysql-write2
+docker stop jy-mysql-write3

@@ -1,0 +1,25 @@
+#!/bin/bash
+# https://hub.docker.com/_/mysql/
+# MYSQL_PORT_3306_TCP_ADDR
+# MYSQL_PORT_3306_TCP_PORT
+# MYSQL_ENV_MYSQL_ROOT_PASSWORD
+name=_n_
+image_name=mysql:5.7
+port=_p_
+pass=huang
+if [ $(docker ps -a | grep -c $name) -eq 0 ]; then
+	docker run --name $name -p $port:3306 \
+	-h $name \
+	--network mysql \
+	-e MYSQL_ROOT_PASSWORD=$pass \
+	-v $PWD/data:/var/lib/mysql \
+	-v $PWD/conf:/etc/mysql/conf.d \
+	-d $image_name 
+else
+	docker start $name 
+fi
+
+if [ $(lsof -i :$port | grep -c ":$port") -gt 1 ]; then
+	echo "start $name success, listen at $port"
+fi
+

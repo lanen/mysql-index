@@ -1,0 +1,44 @@
+#!/bin/bash
+
+function start_server(){
+	n=$1
+	cd $n
+	./start
+	cd -
+	sleep 2
+}
+
+
+password=huang	
+function grant(){
+	echo "Grant REPLICATION for slave"
+	sql="GRANT REPLICATION SLAVE on *.* to root@'%' identified by 'huang';"
+	mysql -B -s -h 127.0.0.1 -P3316 -u root -e "$sql" -p$password
+}
+
+function slave(){
+	p=$1
+	master=host.docker.internal
+	port=3316
+	user=root
+	password=huang	
+	sql="change master to master_host='$master',master_port=$port,master_user='$user',master_password='$password'"
+	mysql -B -s -e "$sql"  -h 127.0.0.1 -P$p -u root  -phuang
+	sleep 3
+#	mysql -B -s -e "start slave;"  -h 127.0.0.1 -P$p -u root  -p$password
+}
+
+start_server master
+start_server slave1
+start_server slave2
+
+grant
+echo "Import article to master"
+mysql -h 127.0.0.1 -P3316 -u root < config/article.sql -p$password
+mysql -h 127.0.0.1 -P3326 -u root < config/article.sql -p$password
+mysql -h 127.0.0.1 -P3336 -u root < config/article.sql -p$password
+
+echo "slave "
+slave 3326
+slave 3336
+

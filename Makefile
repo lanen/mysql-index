@@ -22,6 +22,7 @@ html: markdown
 resource:
 	cp -r $(include_dir)/css $(output_dir)/
 	cp -r $(include_dir)/img $(output_dir)/
+	cp -r src/images $(output_dir)/
 	cp $(include_dir)/style.css $(output_dir)/
 singlehtml: resource 
 	for i in $(source); do \
@@ -61,3 +62,12 @@ pdf: markdown
 mobi: epub
 	# Symlink bin: ln -s /path/to/kindlegen /usr/local/bin
 	kindlegen $(filename).epub
+
+export-image:
+	/Applications/Sketch.app/Contents/Resources/sketchtool/bin/sketchtool \
+	export pages \
+	--output=src/images \
+	Draft.sketch
+
+clean:
+	rm -rf dist

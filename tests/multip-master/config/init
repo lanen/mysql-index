@@ -1,0 +1,40 @@
+#!/bin/bash
+
+
+function init_dir(){
+	dir=$1
+	mkdir -p $dir/data
+	mkdir -p $dir/conf
+
+	cat config/template  > $dir/start
+	chmod +x $dir/start
+}
+
+function config(){
+	dir=$1
+	name=$2
+	port=$3
+
+	sed -i '' "s/_n_/$name/" $dir/start
+	sed -i '' "s/_p_/$port/" $dir/start
+}
+function id_increment(){
+	dir=$1
+	i=$2
+	o=$3
+	cat config/cnf > $dir/conf/my.cnf
+	sed -i '' "s/_i_/$i/" $dir/conf/my.cnf	
+	sed -i '' "s/_o_/$o/" $dir/conf/my.cnf	
+}
+init_dir master1
+init_dir master2
+init_dir master3
+
+config master1 jy-mysql-write1 3316
+config master2 jy-mysql-write2 3326
+config master3 jy-mysql-write3 3336
+
+id_increment master1 3 1
+id_increment master2 3 2
+id_increment master3 3 3
+
